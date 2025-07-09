@@ -35,7 +35,7 @@
 
     - name: Check if MySQL root login works
       shell: |
-        mysql -u root -e "SELECT 1;" --socket=/var/run/mysqld/mysqld.sock
+        mysql -u root -p'root@123' -e "SELECT 1;" --socket=/var/run/mysqld/mysqld.sock
       register: mysql_root_login_check
       failed_when: false
       changed_when: false
