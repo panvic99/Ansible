@@ -1,6 +1,6 @@
 ---
 - name: Deploying simple web app
-  hosts: managed1
+  hosts: ec2-instance-1
   vars:
     mysql_root_password: password 
   tasks:
