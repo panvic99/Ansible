@@ -33,6 +33,14 @@
         state: started
         enabled: true
 
+    - name: Check if MySQL root login works
+      shell: |
+        mysql -u root -e "SELECT 1;" --socket=/var/run/mysqld/mysqld.sock
+      register: mysql_root_login_check
+      failed_when: false
+      changed_when: false
+      become: yes
+
     - name: Set MySQL root password
       mysql_user:
         name: root
@@ -40,6 +48,7 @@
         password: root@123
         login_unix_socket: /var/run/mysqld/mysqld.sock
         state: present
+      when: mysql_root_login_check.rc != 0
       become: yes
 
 
@@ -49,4 +58,3 @@
         state: present
         login_user: root
         login_password: root@123
-        
