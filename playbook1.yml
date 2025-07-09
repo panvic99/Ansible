@@ -7,6 +7,7 @@
     - name: Update apt cache
       apt:
         update_cache: yes
+      become: yes
 
     - name: Python and its dependencies
       apt: name={{ item }} state=present
@@ -17,12 +18,14 @@
         - build-essential
         - python-pip
         - python-mysqldb
+      become: yes
 
     - name: Install MySQL database
       apt: name={{ item }} state=present
       with_items:
         - mysql-server
         - mysql-client
+      become: yes
 
     - name: Start the database service
       service: 
