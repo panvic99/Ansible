@@ -88,3 +88,10 @@
     - name: Copy source code to dest server
       copy: src=app.py dest=/opt/app.py
       become: yes
+
+    - name: Start venv
+      shell: source /opt/venv/bin/activate
+    - name: Start web server
+      shell: FLASK_APP=/opt/app.py nohup flask run --host=0.0.0.0
+
+    
