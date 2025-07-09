@@ -1,8 +1,7 @@
 ---
 - name: Deploying simple web app
   hosts: ec2-instance-1
-  vars:
-    mysql_root_password: password 
+ 
   tasks:
     - name: Update apt cache
       apt:
@@ -58,3 +57,14 @@
         state: present
         login_user: root
         login_password: root@123
+
+    - name: Install Flask and dependencies
+      pip: 
+        name: {{ item }}
+        state: present
+      with_items:
+      - flask
+      - flask-mysql
+    
+    - name: Copy source code to dest server
+      copy: src=app.py dest=/opt/app.py
