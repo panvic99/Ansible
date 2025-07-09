@@ -1,0 +1,37 @@
+---
+- name: Deploying simple web app
+  hosts: managed1
+  vars:
+    mysql_root_password: password 
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+
+    - name: Python and its dependencies
+      apt: name={{ item }} state=present
+      with_items:
+        - python
+        - python-setuptools
+        - python-dev
+        - build-essential
+        - python-pip
+        - python-mysqldb
+
+    - name: Install MySQL database
+      apt: name={{ item }} state=present
+      with_items:
+        - mysql-server
+        - mysql-client
+
+    - name: Start the database service
+      service: 
+        name: mysql
+        state: started
+        enabled: true
+
+    - name: Create a new database with name 'employee_db'
+      mysql_db:
+        name: employee_db
+        state: present
+    
