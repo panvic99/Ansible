@@ -60,7 +60,7 @@
 
     - name: Install Flask and dependencies
       pip: 
-        name: {{ item }}
+        name: "{{ item }}"
         state: present
       with_items:
       - flask
