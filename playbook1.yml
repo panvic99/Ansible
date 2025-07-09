@@ -59,7 +59,7 @@
         login_password: root@123
 
     - name: Install Flask and dependencies
-      pip3: 
+      pip: 
         name: "{{ item }}"
         state: present
       with_items:
