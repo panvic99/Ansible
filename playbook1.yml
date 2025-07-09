@@ -33,6 +33,15 @@
         state: started
         enabled: true
 
+    - name: Set MySQL root password
+      mysql_user:
+        name: root
+        host: localhost
+        password: root@123
+        login_unix_socket: /var/run/mysqld/mysqld.sock
+        state: present
+
+
     - name: Create a new database with name 'employee_db'
       mysql_db:
         name: employee_db
