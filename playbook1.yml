@@ -17,6 +17,7 @@
         - build-essential
         - python3-pip
         - python3-mysqldb
+        - python3-venv
       become: yes
 
     - name: Install MySQL database
