@@ -1,0 +1,16 @@
+---
+- name: Hello from managed node
+  hosts: managed
+  tasks:
+    - name: Show Python version
+      command: python3 --version
+      register: py_ver
+    - name: Say Hello
+      debug:
+        msg: "Hello from managed node!"
+    - name: Display Python version output
+      debug:
+        msg: "{{ py_ver.stdout }}"
+    - name: Ping
+      ping:
+      register: ping_result
