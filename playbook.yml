@@ -1,6 +1,6 @@
 ---
 - name: Hello from managed node
-  hosts: managed
+  hosts: ec2-instance-1
   tasks:
     - name: Show Python version
       command: python3 --version
