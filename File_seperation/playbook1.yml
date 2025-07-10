@@ -80,6 +80,7 @@
     - name: Create table 
       mysql_query:
         login_db: employee_db
+        state: present
         query: |
           CREATE TABLE employees (
             employee_id INT PRIMARY KEY AUTO_INCREMENT,
