@@ -102,7 +102,7 @@
           );
         login_user: bob
         login_password: 12345
-        when: query_result.rc != 0
+      when: query_result.rc != 0
 
     # - name: Install Flask and dependencies
     #   pip: 
