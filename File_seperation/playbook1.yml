@@ -24,9 +24,14 @@
         - python3-venv
       become: yes
 
-    - include: task/mysql_db.yml
-    - include: task/python_deploy.yml
-    - include: task/python_venv.yml
+    - name:  Install MySQL
+      include_tasks: task/mysql_db.yml
+
+    - name:  create Python venv
+      include_tasks: task/python_venv.yml
+
+    - name:  Deploy Python app
+      include_tasks: task/python_deploy.yml
 
 
 
