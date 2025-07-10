@@ -68,6 +68,7 @@
         state: present
         login_user: root
         login_password: root@123
+      become: yes
 
     # - name: Install Flask and dependencies
     #   pip: 
