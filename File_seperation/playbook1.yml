@@ -83,6 +83,7 @@
         query: |
           SELECT* FROM employee_db;
         register: query_result
+        ignore_errors: true
 
 
     - name: Create table 
