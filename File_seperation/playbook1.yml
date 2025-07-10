@@ -2,6 +2,10 @@
 - name: Deploying simple web app
   hosts: ec2-instance-1
  
+  vars:
+    root_user: root
+    root_pass: root@123
+
   tasks:
     - name: Update apt cache
       apt:
@@ -35,7 +39,7 @@
 
     - name: Check if MySQL root login works
       shell: |
-        mysql -u root -p'root@123' -e "SELECT 1;" --socket=/var/run/mysqld/mysqld.sock
+        mysql -u {{ root_user }} -p'{{ root_pass }}' -e "SELECT 1;" --socket=/var/run/mysqld/mysqld.sock
       register: mysql_root_login_check
       failed_when: false
       changed_when: false
@@ -43,9 +47,9 @@
 
     - name: Set MySQL root password
       mysql_user:
-        name: root
+        name: "{{ root_user }}"
         host: localhost
-        password: root@123
+        password: "{{ root_pass }}"
         login_unix_socket: /var/run/mysqld/mysqld.sock
         state: present
       when: mysql_root_login_check.rc != 0
@@ -56,8 +60,8 @@
       mysql_db:
         name: employee_db
         state: present
-        login_user: root
-        login_password: root@123
+        login_user: "{{ root_user }}"
+        login_password: "{{ root_pass }}"
       become: yes
 
     - name: Create database user with name 'bob' and password '12345' with all database privileges
@@ -66,8 +70,8 @@
         password: 12345
         priv: '*.*:ALL'
         state: present
-        login_user: root
-        login_password: root@123
+        login_user:  "{{ root_user }}"
+        login_password:  "{{ root_pass }}"
       become: yes
 
     - name: Create table 
