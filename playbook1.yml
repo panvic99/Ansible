@@ -66,6 +66,8 @@
         password: 12345
         priv: '*.*:ALL'
         state: present
+        login_user: root
+        login_password: root@123
 
     # - name: Install Flask and dependencies
     #   pip: 
