@@ -60,6 +60,13 @@
         login_password: root@123
       become: yes
 
+    - name: Create database user with name 'bob' and password '12345' with all database privileges
+      mysql_user:
+        name: bob
+        password: 12345
+        priv: '*.*:ALL'
+        state: present
+
     # - name: Install Flask and dependencies
     #   pip: 
     #     name: "{{ item }}"
