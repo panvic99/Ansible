@@ -1,6 +1,6 @@
 ---
 - name: Deploying simple web app
-  hosts: ec2-instance-1
+  hosts: ec2
   tasks:
     
     - name:  Install Python dependencies
