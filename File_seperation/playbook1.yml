@@ -25,13 +25,13 @@
       become: yes
 
     - name:  Install MySQL
-      include_tasks: task/mysql_db.yml
+      include_tasks: tasks/mysql_db.yml
 
     - name:  create Python venv
-      include_tasks: task/python_venv.yml
+      include_tasks: tasks/python_venv.yml
 
     - name:  Deploy Python app
-      include_tasks: task/python_deploy.yml
+      include_tasks: tasks/python_deploy.yml
 
 
 
