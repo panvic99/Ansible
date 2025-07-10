@@ -77,10 +77,17 @@
         login_password:  "{{ root_pass }}"
       become: yes
 
+    - name: Check if table exist
+      mysql_query:
+        login_db: employee_db
+        query: |
+          SELECT* FROM employee_db;
+        register: query_result
+
+
     - name: Create table 
       mysql_query:
         login_db: employee_db
-        state: present
         query: |
           CREATE TABLE employees (
             employee_id INT PRIMARY KEY AUTO_INCREMENT,
@@ -97,6 +104,7 @@
           );
         login_user: bob
         login_password: 12345
+        when: query_result.failed
 
     # - name: Install Flask and dependencies
     #   pip: 
