@@ -36,6 +36,9 @@
         name: mysql
         state: started
         enabled: true
+    - name: echo 
+      debug:
+        msg: mysql -u {{ root_user }} -p'{{ root_pass }}' -e "SELECT 1;" --socket=/var/run/mysqld/mysqld.sock
 
     - name: Check if MySQL root login works
       shell: |
