@@ -1,28 +1,10 @@
 ---
 - name: Deploying simple web app
   hosts: ec2-instance-1
- 
-  vars:
-    root_user: root
-    root_pass: root@123
-
   tasks:
-    - name: Update apt cache
-      apt:
-        update_cache: yes
-      become: yes
-
-    - name: Python and its dependencies
-      apt: name={{ item }} state=present
-      with_items:
-        - python3
-        - python3-setuptools
-        - python3-dev
-        - build-essential
-        - python3-pip
-        - python3-mysqldb
-        - python3-venv
-      become: yes
+    
+    - name:  Install Python dependencies
+      include_tasks: tasks/python_dependencies.yml
 
     - name:  Install MySQL
       include_tasks: tasks/mysql_db.yml
