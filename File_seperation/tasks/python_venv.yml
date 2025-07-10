@@ -1,0 +1,25 @@
+    # - name: Install Flask and dependencies
+    #   pip: 
+    #     name: "{{ item }}"
+    #     executable: pip3
+    #     extra_args: --break-system-packages
+    #     state: present
+    #   with_items:
+    #   - flask
+    #   - flask-mysql
+
+    - name: Create a virtual environment for app
+      command: python3 -m venv /opt/venv
+      args:
+        creates: /opt/venv
+      become: yes
+
+    - name: Install Flask and dependencies inside venv
+      pip:
+        name:
+          - flask
+          - flask-mysql
+        virtualenv: /opt/venv
+        virtualenv_command: python3 -m venv
+        virtualenv_site_packages: no
+      become: yes

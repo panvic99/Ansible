@@ -24,121 +24,14 @@
         - python3-venv
       become: yes
 
-    - name: Install MySQL database
-      apt: name={{ item }} state=present
-      with_items:
-        - mysql-server
-        - mysql-client
-      become: yes
-
-    - name: Start the database service
-      service: 
-        name: mysql
-        state: started
-        enabled: true
-    - name: echo 
-      debug:
-        msg: mysql -u {{ root_user }} -p'{{ root_pass }}' -e "SELECT 1;" --socket=/var/run/mysqld/mysqld.sock
-
-    - name: Check if MySQL root login works
-      shell: |
-        mysql -u {{ root_user }} -p'{{ root_pass }}' -e "SELECT 1;" --socket=/var/run/mysqld/mysqld.sock
-      register: mysql_root_login_check
-      failed_when: false
-      changed_when: false
-      become: yes
-
-    - name: Set MySQL root password
-      mysql_user:
-        name: "{{ root_user }}"
-        host: localhost
-        password: "{{ root_pass }}"
-        login_unix_socket: /var/run/mysqld/mysqld.sock
-        state: present
-      when: mysql_root_login_check.rc != 0
-      become: yes
+    - include: task/mysql_db.yml
+    - include: task/python_deploy.yml
+    - include: task/python_venv.yml
 
 
-    - name: Create a new database with name 'employee_db'
-      mysql_db:
-        name: employee_db
-        state: present
-        login_user: "{{ root_user }}"
-        login_password: "{{ root_pass }}"
-      become: yes
 
-    - name: Create database user with name 'bob' and password '12345' with all database privileges
-      mysql_user:
-        name: bob
-        password: 12345
-        priv: '*.*:ALL'
-        state: present
-        login_user:  "{{ root_user }}"
-        login_password:  "{{ root_pass }}"
-      become: yes
 
-    - name: Check if table exist
-      shell: mysql -u {{ root_user }} -p{{ root_pass }} -e "SELECT * FROM employee_db.employees;"
-      register: query_result
-      failed_when: false
-      become: yes
-
-    - name: Create table 
-      mysql_query:
-        login_db: employee_db
-        query: |
-          CREATE TABLE employees (
-            employee_id INT PRIMARY KEY AUTO_INCREMENT,
-            first_name VARCHAR(50) NOT NULL,
-            last_name VARCHAR(50) NOT NULL,
-            email VARCHAR(100) UNIQUE NOT NULL,
-            phone_number VARCHAR(20),
-            hire_date DATE NOT NULL,
-            job_title VARCHAR(50) NOT NULL,
-            salary DECIMAL(10, 2),
-            department_id INT,
-            manager_id INT,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-          );
-        login_user: bob
-        login_password: 12345
-      when: query_result.rc != 0
-
-    # - name: Install Flask and dependencies
-    #   pip: 
-    #     name: "{{ item }}"
-    #     executable: pip3
-    #     extra_args: --break-system-packages
-    #     state: present
-    #   with_items:
-    #   - flask
-    #   - flask-mysql
-
-    - name: Create a virtual environment for app
-      command: python3 -m venv /opt/venv
-      args:
-        creates: /opt/venv
-      become: yes
-
-    - name: Install Flask and dependencies inside venv
-      pip:
-        name:
-          - flask
-          - flask-mysql
-        virtualenv: /opt/venv
-        virtualenv_command: python3 -m venv
-        virtualenv_site_packages: no
-      become: yes
     
-    - name: Copy source code to dest server
-      copy: src=../app.py dest=/opt/app.py
-      become: yes
 
-    - name: Start web server using Flask from venv
-      shell: |
-        bash -c "source /opt/venv/bin/activate && FLASK_APP=/opt/app.py nohup flask run --host=0.0.0.0 --port=5000 > /opt/flask.log 2>&1 &"
-      args:
-        executable: /bin/bash
-      become: yes
 
     

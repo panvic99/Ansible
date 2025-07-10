@@ -1,0 +1,10 @@
+    - name: Copy source code to dest server
+      copy: src=../app.py dest=/opt/app.py
+      become: yes
+
+    - name: Start web server using Flask from venv
+      shell: |
+        bash -c "source /opt/venv/bin/activate && FLASK_APP=/opt/app.py nohup flask run --host=0.0.0.0 --port=5000 > /opt/flask.log 2>&1 &"
+      args:
+        executable: /bin/bash
+      become: yes
