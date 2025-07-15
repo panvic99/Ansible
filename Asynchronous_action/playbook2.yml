@@ -4,6 +4,8 @@
   tasks:
     - name: sleeping
       shell: sleep 60
+      async: 65
+      poll: 10
     - name: bye bye
       debug: 
         msg: "bye bye"
