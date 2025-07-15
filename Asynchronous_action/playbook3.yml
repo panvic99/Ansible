@@ -12,6 +12,6 @@
         msg: "bye bye"
     - name: check status
       async_status: 
-        jid: "{{ yum_sleeper.ansible_job_id }}"
+        jid: "{{ sleep_status.ansible_job_id }}"
       register: job_result
       until: job_result.finished
