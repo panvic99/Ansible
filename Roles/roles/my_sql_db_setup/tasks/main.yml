@@ -1,0 +1,79 @@
+    - name: Install MySQL database
+      apt: name={{ item }} state=present
+      with_items:
+        - mysql-server
+        - mysql-client
+      become: yes
+
+    - name: Start the database service
+      service: 
+        name: mysql
+        state: started
+        enabled: true
+    - name: echo 
+      debug:
+        msg: mysql -u {{ root_user }} -p'{{ root_pass }}' -e "SELECT 1;" --socket=/var/run/mysqld/mysqld.sock
+
+    - name: Check if MySQL root login works
+      shell: |
+        mysql -u {{ root_user }} -p'{{ root_pass }}' -e "SELECT 1;" --socket=/var/run/mysqld/mysqld.sock
+      register: mysql_root_login_check
+      failed_when: false
+      changed_when: false
+      become: yes
+
+    - name: Set MySQL root password
+      mysql_user:
+        name: "{{ root_user }}"
+        host: localhost
+        password: "{{ root_pass }}"
+        login_unix_socket: /var/run/mysqld/mysqld.sock
+        state: present
+      when: mysql_root_login_check.rc != 0
+      become: yes
+
+
+    - name: Create a new database with name 'employee_db'
+      mysql_db:
+        name: employee_db
+        state: present
+        login_user: "{{ root_user }}"
+        login_password: "{{ root_pass }}"
+      become: yes
+
+    - name: Create database user with name 'bob' and password '12345' with all database privileges
+      mysql_user:
+        name: bob
+        password: 12345
+        priv: '*.*:ALL'
+        state: present
+        login_user:  "{{ root_user }}"
+        login_password:  "{{ root_pass }}"
+      become: yes
+
+    - name: Check if table exist
+      shell: mysql -u {{ root_user }} -p{{ root_pass }} -e "SELECT * FROM employee_db.employees;"
+      register: query_result
+      failed_when: false
+      become: yes
+
+    - name: Create table 
+      mysql_query:
+        login_db: employee_db
+        query: |
+          CREATE TABLE employees (
+            employee_id INT PRIMARY KEY AUTO_INCREMENT,
+            first_name VARCHAR(50) NOT NULL,
+            last_name VARCHAR(50) NOT NULL,
+            email VARCHAR(100) UNIQUE NOT NULL,
+            phone_number VARCHAR(20),
+            hire_date DATE NOT NULL,
+            job_title VARCHAR(50) NOT NULL,
+            salary DECIMAL(10, 2),
+            department_id INT,
+            manager_id INT,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+          );
+        login_user: bob
+        login_password: 12345
+      when: query_result.rc != 0

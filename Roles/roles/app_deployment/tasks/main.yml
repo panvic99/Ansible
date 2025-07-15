@@ -1,0 +1,36 @@
+    # - name: Install Flask and dependencies
+    #   pip: 
+    #     name: "{{ item }}"
+    #     executable: pip3
+    #     extra_args: --break-system-packages
+    #     state: present
+    #   with_items:
+    #   - flask
+    #   - flask-mysql
+
+    - name: Create a virtual environment for app
+      command: python3 -m venv /opt/venv
+      args:
+        creates: /opt/venv
+      become: yes
+
+    - name: Install Flask and dependencies inside venv
+      pip:
+        name:
+          - flask
+          - flask-mysql
+        virtualenv: /opt/venv
+        virtualenv_command: python3 -m venv
+        virtualenv_site_packages: no
+      become: yes
+      
+    - name: Copy source code to dest server
+      copy: src=../app.py dest=/opt/app.py
+      become: yes
+
+    - name: Start web server using Flask from venv
+      shell: |
+        bash -c "source /opt/venv/bin/activate && FLASK_APP=/opt/app.py nohup flask run --host=0.0.0.0 --port=5000 > /opt/flask.log 2>&1 &"
+      args:
+        executable: /bin/bash
+      become: yes

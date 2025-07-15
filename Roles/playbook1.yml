@@ -1,0 +1,7 @@
+---
+- name: Deploying simple web app
+  hosts: ec2
+  roles:
+    - python_dependencies
+    - my_sql_db_setup
+    - app_deployment
