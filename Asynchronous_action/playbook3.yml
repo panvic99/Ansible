@@ -3,9 +3,15 @@
   hosts: ec2
   tasks:
     - name: sleeping
-      shell: sleep 60
+      shell: sleep 30
       async: 65
       poll: 0
+      register: sleep_status
     - name: bye bye
       debug: 
         msg: "bye bye"
+    - name: check status
+      async_status: 
+        jid: "{{ yum_sleeper.ansible_job_id }}"
+      register: job_result
+      until: job_result.finished
