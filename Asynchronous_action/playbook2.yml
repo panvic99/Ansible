@@ -1,0 +1,9 @@
+---
+- name: Deploying simple web app
+  hosts: ec2
+  tasks:
+    - name: sleeping
+      shell: sleep 60
+    - name: bye bye
+      debug: 
+        msg: "bye bye"
